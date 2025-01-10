@@ -19,6 +19,13 @@ builder.Services.AddMassTransit(x =>
                 x.RoutingKey = "order.shipping";
                 x.ExchangeType = ExchangeType.Direct;
             });
+
+            e.UseMessageRetry(r => r.Interval(2, 100));
+            e.UseMessageRetry(r => r.Exponential(3, TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(3)));
+            e.UseKillSwitch(options => options
+                .SetActivationThreshold(10)
+                .SetTripThreshold(0.1)
+                .SetRestartTimeout(s: 20));
         });
     });
 });
