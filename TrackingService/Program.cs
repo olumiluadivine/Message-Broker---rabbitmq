@@ -1,6 +1,6 @@
 using MassTransit;
 using RabbitMQ.Client;
-using ShippingService.Consumers;
+using TrackingService.Consumers;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,13 +10,13 @@ builder.Services.AddMassTransit(x =>
     {
         cfg.Host("rabbitmq://localhost");
 
-        cfg.ReceiveEndpoint("shipping-order-queue", e =>
+        cfg.ReceiveEndpoint("tracking-order-placed", e =>
         {
             e.Consumer<OrderPlacedConsumer>();
 
             e.Bind("order-placed-exchange", x =>
             {
-                x.RoutingKey = "order.shipping";
+                x.RoutingKey = "order.tracking";
                 x.ExchangeType = ExchangeType.Direct;
             });
         });
